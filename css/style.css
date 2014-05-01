@@ -7,21 +7,20 @@ body{
 }
 
 .colorWrapper{
-	height: 66px;
+	height: 67px;
 	width: 60px;
 	display: inline-block;
 	border-bottom: 1px solid black;
 	text-align: center;
 	padding-top: 9px;
 }
-
 .colorWrapper:last-child{
+	height: 70px;
 	border-bottom: 0px;
-	height: 69px;
 }
 
 .colorWrapper.checked{
-	background-color: #333333;
+	background-color: #555555;
 }
 
 #heading{
@@ -61,5 +60,6 @@ body{
 	height: 800px;
 	display: inline-block;
 	background: #DDDDDD;
-	padding-top: 5px;
+	padding-top: 0px;
+	overflow: hidden;
 }
