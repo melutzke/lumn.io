@@ -25,6 +25,7 @@ function randColor(){
 
 var count = 0;
 var zoom = 1.0;
+var scaleFlag = false;
 
 var x_offset = 0;
 var y_offset = 0;
@@ -46,30 +47,30 @@ function render(){
 	//ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for(var x = 0; x < grid.length; x++){
 		for(var y = 0; y < grid[x].length; y++){
-			//if( grid[x][y].changed){
+			if( grid[x][y].changed || scaleFlag){
 				ctx.fillStyle = grid[x][y].color;
 
 				ctx.fillRect(x * squareSize * zoom - x_offset, y * squareSize * zoom - y_offset, squareSize * zoom, squareSize * zoom);
 				grid[x][y].changed = false;
-			//}
+
+				scaleFlag = false;
+			}
 		}
 	}
 }
 
 $(canvas).bind("wheel mousewheel", function(e) {
+	scaleFlag = true;
     e.preventDefault();
-
     var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail);
-
     var zoom_increment = (delta > 0) ? 1.2 : 0.8;
-
 	x_offset += ( event.offsetX / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
 	y_offset += ( event.offsetY / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
-
 	zoom *= zoom_increment;
 });
 
 $(canvas).bind('click', function(event){
+	console.log("Fired");
 	var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
 	var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
 	grid[x][y].color = $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
