@@ -2,22 +2,10 @@ var canvas = document.getElementById('world');
 var $canvas = $(canvas);
 var ctx = canvas.getContext('2d');
 
-var size = 25; // 100
+var size = 100; // 100
 var squareSize = canvas.width / size;
 
-var grid = [];
-grid.length = size;
-
-for(var x = 0; x < size; x++){
-	grid[x] = [];
-	grid[x].length = size;
-}
-
-for(var x = 0; x < grid.length; x++){
-	for(var y = 0; y < grid[x].length; y++){
-		grid[x][y] = {color: randColor(), changed: true};
-	}
-}
+var grid;
 
 function randColor(){
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
@@ -31,7 +19,9 @@ var x_offset = 0;
 var y_offset = 0;
 
 function render(){
-
+	if( !grid ){
+		return;
+	}
 	// canvas display bounds checking
 	if(zoom < 1){
 		zoom = 1;
@@ -52,11 +42,10 @@ function render(){
 
 				ctx.fillRect(x * squareSize * zoom - x_offset, y * squareSize * zoom - y_offset, squareSize * zoom, squareSize * zoom);
 				grid[x][y].changed = false;
-
-				scaleFlag = false;
 			}
 		}
 	}
+	scaleFlag = false;
 }
 
 $(canvas).bind("wheel mousewheel", function(e) {
@@ -70,11 +59,16 @@ $(canvas).bind("wheel mousewheel", function(e) {
 });
 
 $(canvas).bind('click', function(event){
-	console.log("Fired");
 	var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
 	var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
 	grid[x][y].color = $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 	grid[x][y].changed = true;
+	socket.emit('colorChange', {
+		x: x, 
+		y: y, 
+		color: grid[x][y].color, 
+		changed: true
+	});
 });
 
 
@@ -95,11 +89,18 @@ $radioButtons.click(function() {
 });
 
 setInterval(function(){
-	// for(var i = 0; i < 1; i++){
-	// 	var x = Math.floor( Math.random() * size );
-	// 	var y = Math.floor( Math.random() * size );
-	// 	grid[x][y].color = randColor();
-	// 	grid[x][y].changed = true;
-	// }
 	render();
 }, 16);
+
+var socket = io.connect('http://localhost');
+
+socket.on('fullGridState', function (data) {
+	grid = data.fullgrid;
+});
+
+socket.on('cellUpdate', function (data) {
+	grid[data.x][data.y] = {
+		color: data.color,
+		changed: data.changed
+	};
+});
