@@ -40,7 +40,7 @@ function render(){
 			if( grid[x][y].changed || scaleFlag){
 				ctx.fillStyle = grid[x][y].color;
 
-				ctx.fillRect(x * squareSize * zoom - x_offset, y * squareSize * zoom - y_offset, squareSize * zoom, squareSize * zoom);
+				ctx.fillRect( Math.ceil(x * squareSize * zoom - x_offset), Math.ceil(y * squareSize * zoom - y_offset), Math.ceil(squareSize * zoom), Math.ceil(squareSize * zoom) );
 				grid[x][y].changed = false;
 			}
 		}
@@ -52,7 +52,7 @@ $(canvas).bind("wheel mousewheel", function(e) {
 	scaleFlag = true;
     e.preventDefault();
     var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail);
-    var zoom_increment = (delta > 0) ? 1.2 : 0.8;
+    var zoom_increment = (delta > 0) ? 1.1 : 0.9;
 	x_offset += ( event.offsetX / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
 	y_offset += ( event.offsetY / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
 	zoom *= zoom_increment;
