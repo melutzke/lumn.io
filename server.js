@@ -73,14 +73,18 @@ function mainFunction(){
 		});
 
 		socket.on('colorChange', function (data) {
-			grid[data.x][data.y].color = data.color;
-			updateFlag = true;
-			socket.broadcast.emit('cellUpdate', { 
-				x: data.x,
-				y: data.y,
-				color: data.color,
-				changed: data.changed
-			});
+			if(data && data.hasOwnProperty(color)){
+				if( /^#[0-9A-F]{6}$/i.test(data.color) ){
+					grid[data.x][data.y].color = data.color;
+					updateFlag = true;
+					socket.broadcast.emit('cellUpdate', { 
+						x: data.x,
+						y: data.y,
+						color: data.color,
+						changed: data.changed
+					});
+				}
+			}
 		});
 
 	});
