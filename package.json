@@ -1,0 +1,30 @@
+{
+  "name": "lumnio",
+  "version": "0.0.0",
+  "description": "Leave your mark on the world.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~4.1.1",
+    "socket.io": "^0.9.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melutzke/lumn.io.git"
+  },
+  "keywords": [
+    "lumnio",
+    "lumn.io",
+    "canvas"
+  ],
+  "author": "Mitchell Lutzke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/melutzke/lumn.io/issues"
+  },
+  "homepage": "https://github.com/melutzke/lumn.io"
+}
