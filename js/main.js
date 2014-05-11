@@ -92,7 +92,7 @@ setInterval(function(){
 	render();
 }, 16);
 
-var socket = io.connect('http://localhost');
+var socket = io.connect('/');
 
 socket.on('fullGridState', function (data) {
 	grid = data.fullgrid;
