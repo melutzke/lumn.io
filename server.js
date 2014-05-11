@@ -7,7 +7,7 @@ var updateFlag = false;
 var fs = 		require('fs');
 var express = 	require('express');
 var app = 		express();
-var server = 	require('http').createServer(app).listen(80);
+var server = 	require('http').createServer(app).listen(process.env.PORT || 80);
 var io = 		require('socket.io').listen(server).set('log level', 1);
 
 function randColor(){
