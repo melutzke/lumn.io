@@ -73,7 +73,7 @@ function mainFunction(){
 		});
 
 		socket.on('colorChange', function (data) {
-			if(data && data.hasOwnProperty(color)){
+			if(data && data.color){
 				if( /^#[0-9A-F]{6}$/i.test(data.color) ){
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
