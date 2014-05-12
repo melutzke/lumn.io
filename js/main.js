@@ -37,12 +37,19 @@ function render(){
 	//ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for(var x = 0; x < grid.length; x++){
 		for(var y = 0; y < grid[x].length; y++){
-			if( grid[x][y].changed || scaleFlag){
+
+			var xPos = Math.ceil(x * squareSize * zoom - x_offset);
+			var yPos = Math.ceil(y * squareSize * zoom - y_offset);
+			var width = Math.ceil(squareSize * zoom);
+			var height = width;
+
+			if( (grid[x][y].changed || scaleFlag) && xPos >= -width && xPos <= canvas.width && yPos >= -height && yPos <= canvas.height){
 				ctx.fillStyle = grid[x][y].color;
 
-				ctx.fillRect( Math.ceil(x * squareSize * zoom - x_offset), Math.ceil(y * squareSize * zoom - y_offset), Math.ceil(squareSize * zoom), Math.ceil(squareSize * zoom) );
+				ctx.fillRect( xPos, yPos, , width, height );
 				grid[x][y].changed = false;
 			}
+
 		}
 	}
 	scaleFlag = false;
