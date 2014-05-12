@@ -22,7 +22,7 @@ fs.readFile(gridFile, 'utf-8', function (err, content) {
 
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-	  client.query('INSERT INTO gridData (id, data) VALUES (1, ' + content + ');', function(err, result) {
+	  client.query('INSERT INTO gridData (id, data) VALUES (1, ' + JSON.stringify(grid) + ');', function(err, result) {
 	    if(err) return console.error(err);
 	    console.log(result.rows);
 
