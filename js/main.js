@@ -81,11 +81,19 @@ $(canvas).bind('mousedown', function(event){
 		$(canvas).unbind('mousemove');
 	});
 
+	$(canvas).trigger({
+		type: "mousemove",
+		offsetX: event.offsetX,
+		offsetY: event.offsetY
+	});
+
 });
 
 
 
-$(".color").spectrum();
+$(".color").spectrum({
+	showButtons: false
+});
 
 $(".colorWrapper").click(function(){
 	$(".colorWrapper").removeClass("checked");

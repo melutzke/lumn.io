@@ -124,9 +124,5 @@ function mainFunction(){
 		writeGridToFile();
 	}, (10 * 1000) );
 
-	setInterval(function(){
-		io.sockets.emit('test', {test:'test'});
-	}, 100);
-
 }
 
