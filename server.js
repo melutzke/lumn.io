@@ -23,10 +23,13 @@ fs.readFile(gridFile, 'utf-8', function (err, content) {
 
     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('INSERT INTO gridData (id, data) VALUES ($1, $2);', [1, JSON.stringify(grid)], function(err, result) {
-	    console.log(result.rows);
-
-	    mainFunction();
+	  client.query('INSERT INTO gridData (id, data) VALUES ($1, $2);', [1, JSON.stringify(grid)], function(newErrTwo, result) {
+	  	if(newErrTwo){
+	  		console.log("couldn't insert");
+	  	} else {
+	  		mainFunction();
+	  	}
+	    
 
 	  });
 	});
