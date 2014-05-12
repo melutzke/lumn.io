@@ -92,7 +92,7 @@ function mainFunction(){
 				if( /^#[0-9A-F]{6}$/i.test(data.color) ){
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
-					io.sockets.emit('cellUpdate', { 
+					socket.broadcast.emit('cellUpdate', { 
 						x: data.x,
 						y: data.y,
 						color: data.color,
