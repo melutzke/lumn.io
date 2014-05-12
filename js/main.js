@@ -58,16 +58,27 @@ $(canvas).bind("wheel mousewheel", function(e) {
 	zoom *= zoom_increment;
 });
 
-$(canvas).bind('click', function(event){
-	var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
-	var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
-	grid[x][y].color = $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
-	grid[x][y].changed = true;
-	socket.emit('colorChange', {
-		x: x, 
-		y: y, 
-		color: grid[x][y].color, 
-		changed: true
+$(canvas).bind('mousedown', function(event){
+	$(canvas).bind('mousemove', function(event){
+		var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
+		var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
+		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
+
+		if(color != grid[x][y].color){
+			grid[x][y].changed = true;
+
+			socket.emit('colorChange', {
+				x: x, 
+				y: y, 
+				color: grid[x][y].color, 
+				changed: true
+			});
+		}
+
+		
+	});
+	$(canvas).bind('mouseup', function(){
+		$(canvas).unbind('mousemove');
 	});
 });
 

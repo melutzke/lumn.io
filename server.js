@@ -90,14 +90,16 @@ function mainFunction(){
 		socket.on('colorChange', function (data) {
 			if(data && data.color){
 				if( /^#[0-9A-F]{6}$/i.test(data.color) ){
-					grid[data.x][data.y].color = data.color;
-					updateFlag = true;
-					socket.broadcast.emit('cellUpdate', { 
-						x: data.x,
-						y: data.y,
-						color: data.color,
-						changed: data.changed
-					});
+					if(data.x < size && data.y < size){
+						grid[data.x][data.y].color = data.color;
+						updateFlag = true;
+						socket.broadcast.emit('cellUpdate', { 
+							x: data.x,
+							y: data.y,
+							color: data.color,
+							changed: data.changed
+						});
+					}
 				}
 			}
 		});
