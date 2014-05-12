@@ -16,6 +16,10 @@ pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
 if(newErr) console.log("Could not connect to DB: " + newErr);
   client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
+  	client.query.on('end', function() { 
+	  client.end();
+	});
+
   	if(newErrTwo){
   		console.log("couldn't SELECT, db query failed :(");
   	} else {
@@ -47,18 +51,21 @@ function randColor(){
 function writeGridToFile(){
 	//if( ! updateFlag ) return;
 
+	console.log("Before db connection");
+
 	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
-	  	if(newErr){
-	  		console.log("couldn't insert");
-	  	} else {
-	  		console.log("WRITE SUCCESSFUL");
-	  	}
-	  });
+	  	client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+		  	if(newErrTwo){
+		  		console.log("couldn't insert");
+		  	} else {
+		  		console.log("WRITE SUCCESSFUL");
+		  	}
+		});
+	  	client.query.on('end', function() { 
+		  client.end();
+		});
 	});
-
-	//updateFlag = false;
 }
 
 function mainFunction(){
@@ -74,6 +81,9 @@ function mainFunction(){
 	app.use('/css', express.static(__dirname + '/css'));
 	app.use('/js', express.static(__dirname + '/js'));
 	app.use('/socket.io', express.static(__dirname + '/socket.io'));
+	app.use('/write', function(){
+		writeGridToFile();
+	});
 
 
 	app.get('/', function(req, res) {
@@ -112,7 +122,7 @@ function mainFunction(){
 
 	setInterval(function(){
 		writeGridToFile();
-	}, (10 * 1000) );
+	}, 1000 );
 
 }
 
