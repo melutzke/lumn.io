@@ -61,7 +61,7 @@ function writeGridToFile(){
 
 function mainFunction(){
 
-	if( ! grid ){
+	if( ! grid || TRUE ){
 		console.log("Randomizing grid, no file contents...");
 		grid = [];
 		grid.length = size;
