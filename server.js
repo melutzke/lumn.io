@@ -97,7 +97,7 @@ function mainFunction(){
 							x: data.x,
 							y: data.y,
 							color: data.color,
-							changed: data.changed
+							changed: true
 						});
 					} else {
 						console.log("ERROR: ", data);

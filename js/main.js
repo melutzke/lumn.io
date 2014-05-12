@@ -66,6 +66,7 @@ $(canvas).bind('mousedown', function(event){
 		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
 		if(color != grid[x][y].color){
+
 			grid[x][y].changed = true;
 
 			socket.emit('colorChange', {
@@ -112,6 +113,7 @@ socket.on('fullGridState', function (data) {
 });
 
 socket.on('cellUpdate', function (data) {
+	console.log("Got update");
 	grid[data.x][data.y] = {
 		color: data.color,
 		changed: data.changed
