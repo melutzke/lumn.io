@@ -17,6 +17,9 @@ var pg = 		require('pg');
     if(newErr) console.log("Could not connect to DB: " + newErr);
 	  client.query('SELECT * FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
+	  	console.log("RESULT:");
+	  	console.log(result);
+
 	  	if(newErrTwo){
 	  		console.log("couldn't SELECT");
 	  		console.log("WE FAILED AT LIFE.");
