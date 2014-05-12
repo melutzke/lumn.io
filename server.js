@@ -43,7 +43,7 @@ function randColor(){
 }
 
 function writeGridToFile(){
-	if( ! updateFlag ) return;
+	//if( ! updateFlag ) return;
 
 	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
@@ -56,7 +56,7 @@ function writeGridToFile(){
 	  });
 	});
 
-	updateFlag = false;
+	//updateFlag = false;
 }
 
 function mainFunction(){
