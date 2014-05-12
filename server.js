@@ -50,7 +50,7 @@ function writeGridToFile(){
 	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
 	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
-	  	if(newErrTwo){
+	  	if(newErr){
 	  		console.log("couldn't insert");
 	  	} else {
 	  		console.log("WRITE SUCCESSFUL");
@@ -65,19 +65,6 @@ function mainFunction(){
 
 	if( ! grid ){
 		throw Error("Failed to load grid from database :'(");
-		// console.log("Randomizing grid, no file contents...");
-		// grid = [];
-		// grid.length = size;
-
-		// for(var x = 0; x < size; x++){
-		// 	grid[x] = [];
-		// 	grid[x].length = size;
-		// 	for(var y = 0; y < size; y++){
-		// 		grid[x][y] = {changed: true, color: randColor() };
-		// 	}
-		// }
-		// updateFlag = true;
-
 		writeGridToFile();
 	} else {
 		console.log("Loaded grid from PG successfully.");
@@ -100,7 +87,7 @@ function mainFunction(){
 		});
 
 		socket.on('colorChange', function (data) {
-			if(data && data.color && data.x && data.y){
+			if(data && data.color && data.x && data.y && data.x < size && data.x >= 0 && data.y >= 0 && data.y < size){
 
 				var change = grid[data.x][data.y] != data.color;
 
