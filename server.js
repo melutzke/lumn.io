@@ -12,61 +12,20 @@ var io = 		require('socket.io').listen(server).set('log level', 1);
 
 var pg = 		require('pg');
 
+pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+if(newErr) console.log("Could not connect to DB: " + newErr);
+  client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
-
-
-
-// 	fs.readFile(gridFile, 'utf-8', function (err, content) {
-//     if (err) throw err;
-//     if(content){
-//     	grid = JSON.parse(content);
-//     }
+  	if(newErrTwo){
+  		console.log("couldn't SELECT, db query failed :(");
+  	} else {
+  		console.log("Query worked");
+  		grid = JSON.parse(result.rows[0].data);
+  		mainFunction();
+  	}
     
-
-
-
-//     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-//     if(newErr) console.log("Could not connect to DB: " + newErr);
-// 	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
-// 	  	if(newErrTwo){
-// 	  		console.log("couldn't insert");
-// 	  	} else {
-// 	  		mainFunction();
-// 	  	}
-
-// 	  	//INSERT INTO grid."gridData" ("id", "data") VALUES (1, '{test:1}');
-	    
-
-// 	  });
-// 	});
-
-
-
-
-// });  
-
-
-
-
-
-
-    pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-    if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
-
-	  	if(newErrTwo){
-	  		console.log("couldn't SELECT");
-	  		console.log("WE FAILED AT LIFE.");
-	  	} else {
-	  		console.log("Query worked:", result.rows[0].data);
-	  		//console.log(result);
-	  		//console.log(result[0].charAt(0), result[0].charAt(result[0].length-1));
-	  		grid = JSON.parse(result.rows[0].data);
-	  		mainFunction();
-	  	}
-	    
-	  });
-	});
+  });
+});
 
 
 
@@ -84,6 +43,8 @@ function writeGridToFile(){
 	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
 	  	if(newErrTwo){
 	  		console.log("couldn't insert");
+	  	} else {
+	  		console.log("WRITE SUCCESSFUL");
 	  	}
 	  });
 	});
