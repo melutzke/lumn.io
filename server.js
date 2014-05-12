@@ -120,7 +120,7 @@ function mainFunction(){
 
 	setInterval(function(){
 		writeGridToFile();
-	}, 1000 );
+	}, 10000 );
 
 }
 
