@@ -63,23 +63,24 @@ function writeGridToFile(){
 
 function mainFunction(){
 
-	if( ! grid || TRUE ){
-		console.log("Randomizing grid, no file contents...");
-		grid = [];
-		grid.length = size;
+	if( ! grid ){
+		throw Error("Failed to load grid from database :'(");
+		// console.log("Randomizing grid, no file contents...");
+		// grid = [];
+		// grid.length = size;
 
-		for(var x = 0; x < size; x++){
-			grid[x] = [];
-			grid[x].length = size;
-			for(var y = 0; y < size; y++){
-				grid[x][y] = {changed: true, color: randColor() };
-			}
-		}
-		updateFlag = true;
+		// for(var x = 0; x < size; x++){
+		// 	grid[x] = [];
+		// 	grid[x].length = size;
+		// 	for(var y = 0; y < size; y++){
+		// 		grid[x][y] = {changed: true, color: randColor() };
+		// 	}
+		// }
+		// updateFlag = true;
 
 		writeGridToFile();
 	} else {
-		console.log("Loaded grid from file.");
+		console.log("Loaded grid from PG successfully.");
 	}
 
 	app.use(express.static(__dirname + '/'));
