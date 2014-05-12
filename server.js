@@ -14,7 +14,7 @@ var pg = 		require('pg');
 
 pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
 if(newErr) console.log("Could not connect to DB: " + newErr);
-  	client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+  	var query = client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
 	  	if(newErrTwo){
 	  		console.log("couldn't SELECT, db query failed :(");
@@ -26,7 +26,7 @@ if(newErr) console.log("Could not connect to DB: " + newErr);
     
  	});
 
-  	client.query.on('end', function() { 
+  	query.on('end', function() { 
 		client.end();
 	});
 
@@ -53,14 +53,14 @@ function writeGridToFile(){
 
 	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  	client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+	  	var query = client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
 		  	if(newErrTwo){
 		  		console.log("couldn't insert");
 		  	} else {
 		  		console.log("WRITE SUCCESSFUL");
 		  	}
 		});
-	  	client.query.on('end', function() { 
+	  	query.on('end', function() { 
 		  client.end();
 		});
 	});
