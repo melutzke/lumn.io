@@ -58,10 +58,10 @@ var pg = 		require('pg');
 	  		console.log("couldn't SELECT");
 	  		console.log("WE FAILED AT LIFE.");
 	  	} else {
-	  		console.log("Query worked:", result);
+	  		console.log("Query worked:", result.rows[0]);
 	  		//console.log(result);
 	  		//console.log(result[0].charAt(0), result[0].charAt(result[0].length-1));
-	  		grid = JSON.parse(result);
+	  		grid = JSON.parse(result.rows[0]);
 	  		mainFunction();
 	  	}
 	    
