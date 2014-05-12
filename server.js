@@ -52,7 +52,7 @@ var pg = 		require('pg');
 
     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('SELECT * FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+	  client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
 	  	if(newErrTwo){
 	  		console.log("couldn't SELECT");
