@@ -27,6 +27,13 @@ if(newErr) console.log("Could not connect to DB: " + newErr);
   });
 });
 
+// fs.readFile(gridFile, function(err, data){
+// 	if( !err ){
+// 		grid = JSON.parse(data);
+// 		mainFunction();
+// 	}
+// });
+
 
 
 
@@ -48,6 +55,8 @@ function writeGridToFile(){
 	  	}
 	  });
 	});
+
+	updateFlag = false;
 }
 
 function mainFunction(){
@@ -88,17 +97,24 @@ function mainFunction(){
 		});
 
 		socket.on('colorChange', function (data) {
-			if(data && data.color){
-				if( /^#[0-9A-F]{6}$/i.test(data.color) ){
+			if(data && data.color && data.x && data.y){
+
+				var change = grid[data.x][data.y] != data.color;
+
+				if( change && /^#[0-9A-F]{6}$/i.test(data.color) ){
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
-					socket.broadcast.emit('cellUpdate', { 
+					
+					var emitData = { 
 						x: data.x,
 						y: data.y,
 						color: data.color,
 						changed: true
-					});
+					};
+
+					socket.broadcast.emit('cellUpdate', emitData);
 				}
+
 			}
 		});
 
@@ -107,6 +123,10 @@ function mainFunction(){
 	setInterval(function(){
 		writeGridToFile();
 	}, (10 * 1000) );
+
+	setInterval(function(){
+		io.sockets.emit('test', {test:'test'});
+	}, 100);
 
 }
 

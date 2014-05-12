@@ -66,6 +66,7 @@ $(canvas).bind('mousedown', function(event){
 		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
 		grid[x][y].changed = true;
+		grid[x][y].color = color;
 
 		socket.emit('colorChange', {
 			x: x, 
@@ -103,7 +104,7 @@ setInterval(function(){
 	render();
 }, 16);
 
-var socket = io.connect('/');
+var socket = io.connect('');
 
 socket.on('fullGridState', function (data) {
 	grid = data.fullgrid;
