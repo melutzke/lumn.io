@@ -1,6 +1,6 @@
 var gridFile = 	"./gridstate.txt";
 var grid = 		null;
-var size = 		100;
+var size = 		200;
 
 var updateFlag = false;
 
@@ -12,20 +12,20 @@ var io = 		require('socket.io').listen(server).set('log level', 1);
 
 var pg = 		require('pg');
 
-pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-if(newErr) console.log("Could not connect to DB: " + newErr);
-  client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+// pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+// if(newErr) console.log("Could not connect to DB: " + newErr);
+//   client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
-  	if(newErrTwo){
-  		console.log("couldn't SELECT, db query failed :(");
-  	} else {
-  		console.log("Query worked");
-  		grid = JSON.parse(result.rows[0].data);
-  		mainFunction();
-  	}
+//   	if(newErrTwo){
+//   		console.log("couldn't SELECT, db query failed :(");
+//   	} else {
+//   		console.log("Query worked");
+//   		grid = JSON.parse(result.rows[0].data);
+//   		mainFunction();
+//   	}
     
-  });
-});
+//   });
+// });
 
 // fs.readFile(gridFile, function(err, data){
 // 	if( !err ){

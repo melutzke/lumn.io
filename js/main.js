@@ -2,7 +2,7 @@ var canvas = document.getElementById('world');
 var $canvas = $(canvas);
 var ctx = canvas.getContext('2d');
 
-var size = 100; // 100
+var size = 200; // 100
 var squareSize = canvas.width / size;
 
 var grid;
@@ -93,8 +93,8 @@ $(canvas).bind('mousedown', function(event){
 
 $(".color").spectrum({
 	showButtons: false
-});
-
+})
+;
 $(".colorWrapper").click(function(){
 	$(".colorWrapper").removeClass("checked");
 	$(this).children("input:radio").attr('checked', true);
