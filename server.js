@@ -34,6 +34,8 @@ var pg = 		require('pg');
 // 	}
 // });
 
+mainFunction();
+
 
 
 
