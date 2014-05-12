@@ -59,7 +59,7 @@ var pg = 		require('pg');
 	  		console.log("WE FAILED AT LIFE.");
 	  	} else {
 	  		console.log("Query worked:");
-	  		console.log(result[0].data.charAt(0), result[0].data.charAt(result[0].length-1));
+	  		console.log(result[0].data.charAt(0), result[0].data.charAt(result[0].data.length-1));
 	  		grid = JSON.parse(result[0].data);
 	  		mainFunction();
 	  	}
