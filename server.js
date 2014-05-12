@@ -10,6 +10,34 @@ var app = 		express();
 var server = 	require('http').createServer(app).listen(process.env.PORT || 80);
 var io = 		require('socket.io').listen(server).set('log level', 1);
 
+var pg = 		require('pg');
+
+fs.readFile(gridFile, 'utf-8', function (err, content) {
+    if (err) throw err;
+    if(content){
+    	grid = JSON.parse(content);
+    }
+    
+
+
+
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+	  client.query('INSERT INTO gridData (id, data) VALUES (1, ' + content + ');', function(err, result) {
+	    if(err) return console.error(err);
+	    console.log(result.rows);
+
+	    mainFunction();
+
+	  });
+	});
+
+
+
+
+});  
+
+
+
 function randColor(){
 	return (function(m,s,c){return (c ? arguments.callee(m,s,c-1) : '#') +
   		s[m.floor(m.random() * s.length)]})(Math,'0123456789ABCDEF',5)
@@ -24,16 +52,6 @@ function writeGridToFile(){
 	  updateFlag = false;
 	});
 }
-
-fs.readFile(gridFile, 'utf-8', function (err, content) {
-    if (err) throw err;
-    if(content){
-    	grid = JSON.parse(content);
-    }
-    mainFunction();
-});  
-
-
 
 function mainFunction(){
 
