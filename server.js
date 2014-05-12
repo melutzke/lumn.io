@@ -21,7 +21,7 @@ var pg = 		require('pg');
 	  		console.log("couldn't SELECT");
 	  		console.log("WE FAILED AT LIFE.");
 	  	} else {
-	  		grid = JSON.parse(row[0]);
+	  		grid = JSON.parse(result[0]);
 	  		mainFunction();
 	  	}
 	    
