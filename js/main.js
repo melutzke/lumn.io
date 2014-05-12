@@ -113,7 +113,6 @@ socket.on('fullGridState', function (data) {
 });
 
 socket.on('cellUpdate', function (data) {
-	console.log("Got update");
 	grid[data.x][data.y] = {
 		color: data.color,
 		changed: data.changed
