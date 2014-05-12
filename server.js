@@ -100,7 +100,7 @@ function mainFunction(){
 							changed: data.changed
 						});
 					} else {
-						console.log("ERROR: " data);
+						console.log("ERROR: ", data);
 					}
 				}
 			}
