@@ -99,6 +99,8 @@ function mainFunction(){
 							color: data.color,
 							changed: data.changed
 						});
+					} else {
+						console.log("ERROR: " data);
 					}
 				}
 			}

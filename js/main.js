@@ -59,6 +59,7 @@ $(canvas).bind("wheel mousewheel", function(e) {
 });
 
 $(canvas).bind('mousedown', function(event){
+
 	$(canvas).bind('mousemove', function(event){
 		var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
 		var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
@@ -75,11 +76,12 @@ $(canvas).bind('mousedown', function(event){
 			});
 		}
 
-		
 	});
+
 	$(canvas).bind('mouseup', function(){
 		$(canvas).unbind('mousemove');
 	});
+
 });
 
 
