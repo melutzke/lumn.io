@@ -12,34 +12,22 @@ var io = 		require('socket.io').listen(server).set('log level', 1);
 
 var pg = 		require('pg');
 
-fs.readFile(gridFile, 'utf-8', function (err, content) {
-    if (err) throw err;
-    if(content){
-    	grid = JSON.parse(content);
-    }
-    
-
-
 
     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+	  client.query('SELECT * FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+
 	  	if(newErrTwo){
-	  		console.log("couldn't insert");
+	  		console.log("couldn't SELECT");
+	  		console.log("WE FAILED AT LIFE.");
 	  	} else {
+	  		grid = JSON.parse(row[0]);
 	  		mainFunction();
 	  	}
-
-	  	//INSERT INTO grid."gridData" ("id", "data") VALUES (1, '{test:1}');
 	    
-
 	  });
 	});
 
-
-
-
-});  
 
 
 
@@ -51,10 +39,13 @@ function randColor(){
 function writeGridToFile(){
 	if( ! updateFlag ) return;
 
-	fs.writeFile(gridFile, JSON.stringify(grid), function (err) {
-	  if (err) throw err;
-	  console.log("file saved");
-	  updateFlag = false;
+	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+    if(newErr) console.log("Could not connect to DB: " + newErr);
+	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+	  	if(newErrTwo){
+	  		console.log("couldn't insert");
+	  	}
+	  });
 	});
 }
 
