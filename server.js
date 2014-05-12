@@ -16,54 +16,56 @@ var pg = 		require('pg');
 
 
 
-	fs.readFile(gridFile, 'utf-8', function (err, content) {
-    if (err) throw err;
-    if(content){
-    	grid = JSON.parse(content);
-    }
+// 	fs.readFile(gridFile, 'utf-8', function (err, content) {
+//     if (err) throw err;
+//     if(content){
+//     	grid = JSON.parse(content);
+//     }
     
+
+
+
+//     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+//     if(newErr) console.log("Could not connect to DB: " + newErr);
+// 	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+// 	  	if(newErrTwo){
+// 	  		console.log("couldn't insert");
+// 	  	} else {
+// 	  		mainFunction();
+// 	  	}
+
+// 	  	//INSERT INTO grid."gridData" ("id", "data") VALUES (1, '{test:1}');
+	    
+
+// 	  });
+// 	});
+
+
+
+
+// });  
+
+
+
 
 
 
     pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
     if(newErr) console.log("Could not connect to DB: " + newErr);
-	  client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+	  client.query('SELECT * FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+
 	  	if(newErrTwo){
-	  		console.log("couldn't insert");
+	  		console.log("couldn't SELECT");
+	  		console.log("WE FAILED AT LIFE.");
 	  	} else {
+	  		console.log("Query worked:");
+	  		console.log(result[0].charAt(0), result[0].charAt(result[0].length-1));
+	  		grid = JSON.parse(result[0]);
 	  		mainFunction();
 	  	}
-
-	  	//INSERT INTO grid."gridData" ("id", "data") VALUES (1, '{test:1}');
 	    
-
 	  });
 	});
-
-
-
-
-});  
-
-
-
-
-
-
- //    pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
- //    if(newErr) console.log("Could not connect to DB: " + newErr);
-	//   client.query('SELECT * FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
-
-	//   	if(newErrTwo){
-	//   		console.log("couldn't SELECT");
-	//   		console.log("WE FAILED AT LIFE.");
-	//   	} else {
-	//   		grid = JSON.parse(result[0]);
-	//   		mainFunction();
-	//   	}
-	    
-	//   });
-	// });
 
 
 
