@@ -61,7 +61,7 @@ var pg = 		require('pg');
 	  		console.log("Query worked:", result);
 	  		//console.log(result);
 	  		//console.log(result[0].charAt(0), result[0].charAt(result[0].length-1));
-	  		grid = JSON.parse(result[0]);
+	  		grid = JSON.parse(result);
 	  		mainFunction();
 	  	}
 	    
