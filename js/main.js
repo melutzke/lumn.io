@@ -46,7 +46,7 @@ function render(){
 			if( (grid[x][y].changed || scaleFlag) && xPos >= -width && xPos <= canvas.width && yPos >= -height && yPos <= canvas.height){
 				ctx.fillStyle = grid[x][y].color;
 
-				ctx.fillRect( xPos, yPos, , width, height );
+				ctx.fillRect( xPos, yPos, width, height );
 				grid[x][y].changed = false;
 			}
 
