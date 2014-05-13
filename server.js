@@ -100,6 +100,7 @@ function mainFunction(){
 				var change = grid[data.x][data.y] != data.color;
 
 				if( change && /^#[0-9A-F]{6}$/i.test(data.color) ){
+					console.log(x,y);
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
 					

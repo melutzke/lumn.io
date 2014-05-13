@@ -72,15 +72,17 @@ $(canvas).bind('mousedown', function(event){
 		var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
 		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
-		grid[x][y].changed = true;
-		grid[x][y].color = color;
+		if(x >= 0 && x < size && y >= 0 && y < size){
+			grid[x][y].changed = true;
+			grid[x][y].color = color;
 
-		socket.emit('colorChange', {
-			x: x, 
-			y: y, 
-			color: color, 
-			changed: true
-		});
+			socket.emit('colorChange', {
+				x: x, 
+				y: y, 
+				color: color, 
+				changed: true
+			});
+		}
 
 	});
 
