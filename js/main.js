@@ -98,7 +98,7 @@ $(canvas).bind('mousedown', function(event){
 
 });
 
-
+var reconnectInterval = null;
 
 $(".color").spectrum({
 	showButtons: false
@@ -141,18 +141,29 @@ socket.on('cellUpdate', function (data) {
 	};
 });
 
+socket.on('connect', function(){
+	if( reconnectInterval ){
+		clearInterval(reconnectInterval);
+	}
+});
+
 socket.on('disconnect', function() {
 	$('#loading').css('display', 'block')
 		.css('opacity', '1.0')
 		.text('Connection lost, reconnecting...');
-		
-    socket.socket.reconnect(function(){
-    	//callback?
-    	setTimeout(function(){
-		$('#loading').css('opacity', '0');
-			setTimeout(function(){
-				$('#loading').css('display', 'none');
-			},1000);
-		}, 1000);
-    });
+
+	reconnectInterval = setInterval( function(){
+
+		socket.socket.reconnect(function(){
+	    	//callback?
+	    	setTimeout(function(){
+			$('#loading').css('opacity', '0');
+				setTimeout(function(){
+					$('#loading').css('display', 'none');
+				},1000);
+			}, 1000);
+	    });
+
+	}, 2000);
+    
 });
