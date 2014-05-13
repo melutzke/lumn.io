@@ -86,7 +86,7 @@ function gridLog(data){
 }
 
 function mainFunction(){
-
+	console.log("################# IN SIDE MAIN");
 	if( ! grid ){
 		throw Error("Failed to load grid from database :'(");
 		writeGridToFile();
