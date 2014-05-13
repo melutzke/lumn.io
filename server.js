@@ -12,25 +12,25 @@ var io = 		require('socket.io').listen(server).set('log level', 1);
 
 var pg = 		require('pg');
 
-pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-if(newErr) console.log("Could not connect to DB: " + newErr);
-  	var query = client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+// pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+// if(newErr) console.log("Could not connect to DB: " + newErr);
+//   	var query = client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
-	  	if(newErrTwo){
-	  		console.log("couldn't SELECT, db query failed :(");
-	  	} else {
-	  		console.log("Query worked");
-	  		grid = JSON.parse(result.rows[0].data);
-	  		mainFunction();
-	  	}
+// 	  	if(newErrTwo){
+// 	  		console.log("couldn't SELECT, db query failed :(");
+// 	  	} else {
+// 	  		console.log("Query worked");
+// 	  		grid = JSON.parse(result.rows[0].data);
+// 	  		mainFunction();
+// 	  	}
     
- 	});
+//  	});
 
-  	query.on('end', function() { 
-		client.end();
-	});
+//   	query.on('end', function() { 
+// 		client.end();
+// 	});
 
-});
+// });
 
 fs.readFile(gridFile, function(err, data){
 	if( !err ){
@@ -49,21 +49,21 @@ function randColor(){
 function writeGridToFile(){
 	//if( ! updateFlag ) return;
 
-	console.log("Before db connection");
+	// console.log("Before db connection");
 
-	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-    if(newErr) console.log("Could not connect to DB: " + newErr);
-	  	var query = client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
-		  	if(newErrTwo){
-		  		console.log("couldn't insert");
-		  	} else {
-		  		console.log("WRITE SUCCESSFUL");
-		  	}
-		});
-	  	query.on('end', function() { 
-		  client.end();
-		});
-	});
+	// pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+ //    if(newErr) console.log("Could not connect to DB: " + newErr);
+	//   	var query = client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+	// 	  	if(newErrTwo){
+	// 	  		console.log("couldn't insert");
+	// 	  	} else {
+	// 	  		console.log("WRITE SUCCESSFUL");
+	// 	  	}
+	// 	});
+	//   	query.on('end', function() { 
+	// 	  client.end();
+	// 	});
+	// });
 }
 
 function mainFunction(){
