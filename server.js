@@ -66,6 +66,25 @@ function writeGridToFile(){
 	});
 }
 
+function gridLog(data){
+
+	console.log("Before gridlog connection");
+
+	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+    if(newErr) console.log("Could not connect to DB: " + newErr);
+	  	var query = client.query('INSERT INTO grid."gridLog" ("timestamp", "x", "y", "color") VALUES (now(), $1, $2, $3)', [data.x, data.y, data.color], function(newErrTwo, result) {
+		  	if(newErrTwo){
+		  		console.log("couldn't insert into the log");
+		  	} else {
+		  		console.log("WRITE SUCCESSFUL: LOG");
+		  	}
+		});
+	  	query.on('end', function() { 
+		  client.end();
+		});
+	});
+}
+
 function mainFunction(){
 
 	if( ! grid ){
@@ -108,6 +127,8 @@ function mainFunction(){
 					console.log(data.x,data.y);
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
+
+					gridLog(data);
 					
 					var emitData = { 
 						x: data.x,
