@@ -60,16 +60,16 @@ $(canvas).bind("wheel mousewheel", function(e) {
     e.preventDefault();
     var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail);
     var zoom_increment = (delta > 0) ? 1.1 : 0.9;
-	x_offset += ( event.offsetX / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
-	y_offset += ( event.offsetY / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
+	x_offset += ( (event.offsetX || event.clientX - $(event.target).offset().left) / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
+	y_offset += ( (event.offsetY || event.clientY - $(event.target).offset().top) / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
 	zoom *= zoom_increment;
 });
 
 $(canvas).bind('mousedown', function(event){
 
 	$(canvas).bind('mousemove', function(event){
-		var x = Math.floor( (event.offsetX + x_offset) / squareSize / zoom);
-		var y = Math.floor( (event.offsetY + y_offset) / squareSize / zoom);
+		var x = Math.floor( ((event.offsetX || event.clientX - $(event.target).offset().left) + x_offset) / squareSize / zoom);
+		var y = Math.floor( ((event.offsetY || event.clientY - $(event.target).offset().top) + y_offset) / squareSize / zoom);
 		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
 		if(x >= 0 && x < size && y >= 0 && y < size){
@@ -92,8 +92,8 @@ $(canvas).bind('mousedown', function(event){
 
 	$(canvas).trigger({
 		type: "mousemove",
-		offsetX: event.offsetX,
-		offsetY: event.offsetY
+		offsetX: (event.offsetX || event.clientX - $(event.target).offset().left),
+		offsetY: (event.offsetY || event.clientY - $(event.target).offset().top)
 	});
 
 });
