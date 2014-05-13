@@ -126,6 +126,9 @@ var socket = io.connect('');
 socket.on('fullGridState', function (data) {
 	grid = data.fullgrid;
 	$('#world').css('opacity', '1');
+	setTimeout(function(){
+		$('#loading').css('opacity', '0');
+	}, 1000)
 });
 
 socket.on('cellUpdate', function (data) {

@@ -33,6 +33,11 @@ body{
 }
 
 #world{
+	position: absolute;
+	left: 60px;
+	top: 0px;
+	z-index: 1;
+
 	vertical-align: top;
 	display: inline;
 	width: 800px;
@@ -54,7 +59,28 @@ body{
 	user-select: none;
 }
 
+#loading{
+	width: 800px; 
+	height: 100px; 
+	position: absolute; 
+	top: 300px; 
+	left: 60px;
+	text-align: center; 
+	z-index: 2;
+	font-size: 30px;
+	opacity: 1.0;
+
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out;
+	-o-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+	
+	background-color: rgba(255,255,255,0.5);
+}
+
 #container{
+	position: relative;
 	vertical-align: top;
 	display: block;
 	width: 860px;
