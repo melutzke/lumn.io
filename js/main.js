@@ -129,7 +129,7 @@ socket.on('fullGridState', function (data) {
 	setTimeout(function(){
 		$('#loading').css('opacity', '0');
 		setTimeout(function(){
-			$('#loading').remove();
+			$('#loading').css('display', 'none');
 		},1000);
 	}, 1000);
 });
@@ -139,4 +139,20 @@ socket.on('cellUpdate', function (data) {
 		color: data.color,
 		changed: data.changed
 	};
+});
+
+socket.on('disconnect', function() {
+	$('#loading').css('display', 'block')
+		.css('opacity', '1.0')
+		.text('Connection lost, reconnecting...');
+		
+    socket.socket.reconnect(function(){
+    	//callback?
+    	setTimeout(function(){
+		$('#loading').css('opacity', '0');
+			setTimeout(function(){
+				$('#loading').css('display', 'none');
+			},1000);
+		}, 1000);
+    });
 });
