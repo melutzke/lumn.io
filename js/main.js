@@ -128,7 +128,10 @@ socket.on('fullGridState', function (data) {
 	$('#world').css('opacity', '1');
 	setTimeout(function(){
 		$('#loading').css('opacity', '0');
-	}, 1000)
+		setTimeout(function(){
+			$('#loading').remove();
+		},1000);
+	}, 1000);
 });
 
 socket.on('cellUpdate', function (data) {
