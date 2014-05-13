@@ -57,13 +57,13 @@ function render(){
 
 $(canvas).bind("wheel mousewheel", function(event) {
 	scaleFlag = true;
-    event.preventDefault();
     var delta = parseInt(event.originalEvent.wheelDelta || event.wheelDelta || event.originalEvent.deltaY);
     var zoom_increment = (delta > 0) ? 1.1 : 0.9;
 	x_offset += ( (event.offsetX || event.clientX - $(event.target).offset().left) / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
 	y_offset += ( (event.offsetY || event.clientY - $(event.target).offset().top) / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
 	zoom *= zoom_increment;
-	console.log(delta);
+	console.log("zoom: ", zoom);
+	event.preventDefault();
 });
 
 $(canvas).bind('mousedown', function(event){
