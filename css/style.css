@@ -63,12 +63,13 @@ body{
 	width: 800px; 
 	height: 100px; 
 	position: absolute; 
-	top: 300px; 
+	top: 350px; 
 	left: 60px;
 	text-align: center; 
 	z-index: 2;
 	font-size: 30px;
 	opacity: 1.0;
+	line-height: 100px;
 
 	-webkit-transition: opacity 1s ease-in-out;
 	-moz-transition: opacity 1s ease-in-out;
