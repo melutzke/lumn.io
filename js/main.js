@@ -58,7 +58,7 @@ function render(){
 $(canvas).bind("wheel mousewheel", function(e) {
 	scaleFlag = true;
     e.preventDefault();
-    var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail);
+    var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail || evt.detail*(-120) || evt.wheelDelta);
     var zoom_increment = (delta > 0) ? 1.1 : 0.9;
 	x_offset += ( (event.offsetX || event.clientX - $(event.target).offset().left) / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
 	y_offset += ( (event.offsetY || event.clientY - $(event.target).offset().top) / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
