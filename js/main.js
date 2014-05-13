@@ -149,8 +149,8 @@ socket.on('connect', function(){
 
 socket.on('disconnect', function() {
 	$('#loading').css('display', 'block')
-		.css('opacity', '1.0')
-		.text('Connection lost, reconnecting...');
+		.text('Connection lost, reconnecting... Mitchell broke it.')
+		.css('opacity', '1.0');
 
 	reconnectInterval = setInterval( function(){
 
