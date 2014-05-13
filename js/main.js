@@ -38,6 +38,8 @@ function render(){
 	for(var x = 0; x < grid.length; x++){
 		for(var y = 0; y < grid[x].length; y++){
 
+			console.log(zoom);
+
 			var xPos = Math.ceil(x * squareSize * zoom - x_offset);
 			var yPos = Math.ceil(y * squareSize * zoom - y_offset);
 			var width = Math.ceil(squareSize * zoom);
@@ -56,6 +58,7 @@ function render(){
 }
 
 $(canvas).bind("wheel mousewheel", function(event) {
+	event.preventDefault();
 	scaleFlag = true;
     var delta = parseInt(event.originalEvent.wheelDelta || event.wheelDelta || event.originalEvent.deltaY);
     var zoom_increment = (delta > 0) ? 1.1 : 0.9;
@@ -63,7 +66,6 @@ $(canvas).bind("wheel mousewheel", function(event) {
 	y_offset += ( (event.offsetY || event.clientY - $(event.target).offset().top) / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
 	zoom *= zoom_increment;
 	console.log("zoom: ", zoom);
-	event.preventDefault();
 });
 
 $(canvas).bind('mousedown', function(event){
