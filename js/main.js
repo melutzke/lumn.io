@@ -34,11 +34,11 @@ function render(){
 		if( canvas.height * zoom - canvas.height < y_offset ) y_offset = -(canvas.height * zoom - ( y_offset + canvas.height ));
 	}
 
+	console.log(zoom);
+
 	//ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for(var x = 0; x < grid.length; x++){
 		for(var y = 0; y < grid[x].length; y++){
-
-			console.log(zoom);
 
 			var xPos = Math.ceil(x * squareSize * zoom - x_offset);
 			var yPos = Math.ceil(y * squareSize * zoom - y_offset);
