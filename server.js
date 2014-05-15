@@ -128,7 +128,7 @@ function mainFunction(){
 					grid[data.x][data.y].color = data.color;
 					updateFlag = true;
 
-					gridLog(data);
+					//gridLog(data); // HEROKU LIMITS PREVENT THIS, FOR NOW
 					
 					var emitData = { 
 						x: data.x,
