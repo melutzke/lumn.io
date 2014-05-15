@@ -1,110 +1,144 @@
-var canvas = document.getElementById('world');
-var $canvas = $(canvas);
-var ctx = canvas.getContext('2d');
-
-var size = 200; // 100
-var squareSize = canvas.width / size;
-
-var grid;
-
-var mouseXCanvas;
-var mouseYCanvas;
+var app = {};
+	app.canvasId = 		"world";
+	app.canvas = 		document.getElementById( app.canvasId );
+	app.$canvas = 		$(app.canvas);
+	app.ctx = 			app.canvas.getContext('2d');
+	app.mouseX = 		0;
+	app.mouseY = 		0;
+	app.grid = 			null;
+	app.size = 			200;
+	app.squareSize = 	app.canvas.width / app.size;
+	app.x_offset = 		0;
+	app.y_offset = 		0;
+	app.zoom = 			1.0;
+	app.scaleFlag = 	false;
+	app.color = 		"#000000";
 
 function randColor(){
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
 }
 
-var count = 0;
-var zoom = 1.0;
-var scaleFlag = false;
+function getMouse(canvas, evt, toGrid) {
+    var rect = canvas.getBoundingClientRect();
+    if( toGrid ){
+    	return {
+	      x: Math.floor( (evt.clientX - rect.left + app.x_offset) / app.squareSize / app.zoom ),
+	      y: Math.floor( (evt.clientY - rect.top +  app.y_offset) / app.squareSize / app.zoom )
+	    };
+    } else {
+    	return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+    }
+    
+}
 
-var x_offset = 0;
-var y_offset = 0;
+function scale(delta){
+    var zoom_increment = (delta > 0) ? 1.1 : 0.9;
+
+	app.x_offset += ( app.mouseX / app.canvas.width )  * ( (zoom_increment - 1) * app.canvas.width)  * (app.zoom);
+	app.y_offset += ( app.mouseY / app.canvas.height ) * ( (zoom_increment - 1) * app.canvas.height) * (app.zoom);
+
+	app.zoom *= zoom_increment;
+
+	if(app.zoom < 1){
+		app.zoom = 1;
+		app.x_offset = 0;
+		app.y_offset = 0;
+	} else {
+		if( app.x_offset < 0 ) app.x_offset = 0;
+		if( app.y_offset < 0 ) app.y_offset = 0;
+		if( app.canvas.width  * app.zoom - app.canvas.width  < app.x_offset ){
+			app.x_offset = -(app.canvas.width  * app.zoom - ( app.x_offset + app.canvas.width  ));
+		}
+		if( app.canvas.height * app.zoom - app.canvas.height < app.y_offset ){
+			app.y_offset = -(app.canvas.height * app.zoom - ( app.y_offset + app.canvas.height ));
+		}
+	}
+}
+
+function transformDrawable(x, y, w, h){
+	return {
+		x: Math.ceil(x * app.squareSize * app.zoom - app.x_offset),
+		y: Math.ceil(y * app.squareSize * app.zoom - app.y_offset),
+		w: Math.ceil(w * app.zoom),
+		h: Math.ceil(h * app.zoom)
+	}
+}
 
 function render(){
-	if( !grid ){
+	if( !app.grid ){
 		return;
 	}
-	// canvas display bounds checking
-	if(zoom < 1){
-		zoom = 1;
-		x_offset = 0;
-		y_offset = 0;
-	} else {
-		if( x_offset < 0 ) x_offset = 0;
-		if( y_offset < 0 ) y_offset = 0;
-		if( canvas.width  * zoom - canvas.width  < x_offset ) x_offset = -(canvas.width  * zoom - ( x_offset + canvas.width  ));
-		if( canvas.height * zoom - canvas.height < y_offset ) y_offset = -(canvas.height * zoom - ( y_offset + canvas.height ));
-	}
 
-	for(var x = 0; x < grid.length; x++){
-		for(var y = 0; y < grid[x].length; y++){
+	for(var x = 0; x < app.grid.length; x++){
+		for(var y = 0; y < app.grid[x].length; y++){
 
-			var xPos = Math.ceil(x * squareSize * zoom - x_offset);
-			var yPos = Math.ceil(y * squareSize * zoom - y_offset);
-			var width = Math.ceil(squareSize * zoom);
-			var height = width;
+			var newPt = transformDrawable(x, y, app.squareSize, app.squareSize);
 
-			if( (grid[x][y].changed || scaleFlag) && xPos >= -width && xPos <= canvas.width && yPos >= -height && yPos <= canvas.height){
-				ctx.fillStyle = grid[x][y].color;
+			if( ( app.grid[x][y].changed || app.scaleFlag ) 
+				&& newPt.x >= -newPt.w 
+				&& newPt.x <= app.canvas.width 
+				&& newPt.y >= -newPt.h 
+				&& newPt.y <= app.canvas.height){
 
-				ctx.fillRect( xPos, yPos, width, height );
-				grid[x][y].changed = false;
+				app.ctx.fillStyle = app.grid[x][y].color;
+				app.ctx.fillRect( newPt.x, newPt.y, newPt.w, newPt.h );
+
+				app.grid[x][y].changed = false;
 			}
 
 		}
 	}
-	scaleFlag = false;
+	app.scaleFlag = false;
 }
 
-$(canvas).bind("mousemove", function(event){
-    var rect = canvas.getBoundingClientRect();
-    mouseXCanvas = event.clientX - rect.left;
-    mouseYCanvas = event.clientY - rect.top;
+app.$canvas.bind("mousemove", function(event){
+    var rect = app.canvas.getBoundingClientRect();
+    app.mouseX = event.clientX - rect.left;
+    app.mouseY = event.clientY - rect.top;
 });
 
-$(canvas).bind("wheel mousewheel", function(e) {
-	scaleFlag = true;
+app.$canvas.bind("wheel mousewheel", function(e) {
+	app.scaleFlag = true;
 	e.preventDefault();
+
     var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail || -e.originalEvent.deltaY);
-    var zoom_increment = (delta > 0) ? 1.1 : 0.9;
 
-	x_offset += ( mouseXCanvas / canvas.width )  * ( (zoom_increment - 1) * canvas.width)  * (zoom);
-	y_offset += ( mouseYCanvas / canvas.height ) * ( (zoom_increment - 1) * canvas.height) * (zoom);
-
-	zoom *= zoom_increment;
+    scale(delta, app);
 });
 
 
-$(canvas).bind('mousedown', function(event){
+app.$canvas.bind('mousedown', function(event){
 
-	$(canvas).bind('mousemove.dragging', function(event){
-		var x = Math.floor( ((mouseXCanvas || event.clientX - $(event.target).offset().left) + x_offset) / squareSize / zoom);
-		var y = Math.floor( ((mouseYCanvas || event.clientY - $(event.target).offset().top) + y_offset) / squareSize / zoom);
-		var color =  $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
+	app.color = $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
-		if(x >= 0 && x < size && y >= 0 && y < size){
-			grid[x][y].changed = true;
-			grid[x][y].color = color;
+	app.$canvas.bind('mousemove.dragging', function(event){
+
+		var mouse = getMouse(app.canvas, event, true);
+
+		if(mouse.x >= 0 && mouse.x < app.size && mouse.y >= 0 && mouse.y < app.size){
+			app.grid[mouse.x][mouse.y].changed = true;
+			app.grid[mouse.x][mouse.y].color = app.color;
 
 			socket.emit('colorChange', {
-				x: x, 
-				y: y, 
-				color: color, 
+				x: mouse.x, 
+				y: mouse.y, 
+				color: app.color, 
 				changed: true
 			});
 		}
 
 	});
 
-	$(canvas).bind('mouseup', function(){
-		$(canvas).unbind('mousemove.dragging');
+	app.$canvas.bind('mouseup', function(){
+		app.$canvas.unbind('mousemove.dragging');
 	});
 
-	$(canvas).trigger({
+	var mousePos = getMouse(app.canvas, event, false);
+
+	app.$canvas.trigger({
 		type: "mousemove.dragging",
-		offsetX: (mouseXCanvas || event.clientX - $(event.target).offset().left),
-		offsetY: (mouseYCanvas || event.clientY - $(event.target).offset().top)
+		clientX: event.clientX,
+		clientY: event.clientY
 	});
 
 });
@@ -121,8 +155,7 @@ $(".colorWrapper").click(function(){
 	$(this).toggleClass('checked', this.checked);
 });
 
-var $radioButtons = $('input[type="radio"]');
-$radioButtons.click(function() {
+$('input[type="radio"]').click(function() {
     $radioButtons.each(function() {
         $(this).parent().toggleClass('checked', this.checked);
     });
@@ -135,7 +168,7 @@ setInterval(function(){
 var socket = io.connect('');
 
 socket.on('fullGridState', function (data) {
-	grid = data.fullgrid;
+	app.grid = data.fullgrid;
 	$('#world').css('opacity', '1');
 	setTimeout(function(){
 		$('#loading').css('opacity', '0');
@@ -146,7 +179,7 @@ socket.on('fullGridState', function (data) {
 });
 
 socket.on('cellUpdate', function (data) {
-	grid[data.x][data.y] = {
+	app.grid[data.x][data.y] = {
 		color: data.color,
 		changed: data.changed
 	};
@@ -166,7 +199,6 @@ socket.on('disconnect', function() {
 	reconnectInterval = setInterval( function(){
 
 		socket.socket.reconnect(function(){
-	    	//callback?
 	    	setTimeout(function(){
 			$('#loading').css('opacity', '0');
 				setTimeout(function(){

@@ -11,35 +11,36 @@ var server = 	require('http').createServer(app).listen(process.env.PORT || 80);
 var io = 		require('socket.io').listen(server).set('log level', 1);
 
 var pg = 		require('pg');
+var HEROKU = 	true;
 
-pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-if(newErr) console.log("Could not connect to DB: " + newErr);
-  	var query = client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
+if( HEROKU ){
+	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+	if(newErr) console.log("Could not connect to DB: " + newErr);
+	  	var query = client.query('SELECT "data" FROM grid."gridData" WHERE "id" = 1;', function(newErrTwo, result) {
 
-	  	if(newErrTwo){
-	  		console.log("couldn't SELECT, db query failed :(");
-	  	} else {
-	  		console.log("Query worked");
-	  		grid = JSON.parse(result.rows[0].data);
-	  		mainFunction();
-	  	}
-    
- 	});
+		  	if(newErrTwo){
+		  		console.log("couldn't SELECT, db query failed :(");
+		  	} else {
+		  		console.log("Query worked");
+		  		grid = JSON.parse(result.rows[0].data);
+		  		mainFunction();
+		  	}
+	    
+	 	});
 
-  	query.on('end', function() { 
-		client.end();
+	  	query.on('end', function() { 
+			client.end();
+		});
+
 	});
-
-});
-
-// fs.readFile(gridFile, function(err, data){
-// 	if( !err ){
-// 		grid = JSON.parse(data);
-// 		mainFunction();
-// 	}
-// });
-
-
+} else {
+	fs.readFile(gridFile, function(err, data){
+		if( !err ){
+			grid = JSON.parse(data);
+			mainFunction();
+		}
+	});
+}
 
 function randColor(){
 	return (function(m,s,c){return (c ? arguments.callee(m,s,c-1) : '#') +
@@ -49,44 +50,49 @@ function randColor(){
 function writeGridToFile(){
 	if( ! updateFlag ) return;
 
-	console.log("Before db connection");
+	if( HEROKU ){
+		pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+	    if(newErr) console.log("Could not connect to DB: " + newErr);
+		  	var query = client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
+			  	if(newErrTwo){
+			  		console.log("couldn't insert");
+			  	} else {
+			  		console.log("WRITE SUCCESSFUL");
+			  	}
+			});
+		  	query.on('end', function() { 
+			  client.end();
+			});
+		});
+	}
 
-	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-    if(newErr) console.log("Could not connect to DB: " + newErr);
-	  	var query = client.query('UPDATE grid."gridData" SET "data" = $1 WHERE "id" = 1;', [JSON.stringify(grid)], function(newErrTwo, result) {
-		  	if(newErrTwo){
-		  		console.log("couldn't insert");
-		  	} else {
-		  		console.log("WRITE SUCCESSFUL");
-		  	}
-		});
-	  	query.on('end', function() { 
-		  client.end();
-		});
-	});
+	
 }
 
 function gridLog(data){
 
 	console.log("Before gridlog connection");
 
-	pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
-    if(newErr) console.log("Could not connect to DB: " + newErr);
-	  	var query = client.query('INSERT INTO grid."gridLog" ("timestamp", "x", "y", "color") VALUES (now(), $1, $2, $3)', [data.x, data.y, data.color], function(newErrTwo, result) {
-		  	if(newErrTwo){
-		  		console.log("couldn't insert into the log");
-		  	} else {
-		  		console.log("WRITE SUCCESSFUL: LOG");
-		  	}
+	if( HEROKU ){
+		pg.connect(process.env.DATABASE_URL, function(newErr, client, done) {
+	    if(newErr) console.log("Could not connect to DB: " + newErr);
+		  	var query = client.query('INSERT INTO grid."gridLog" ("timestamp", "x", "y", "color") VALUES (now(), $1, $2, $3)', [data.x, data.y, data.color], function(newErrTwo, result) {
+			  	if(newErrTwo){
+			  		console.log("couldn't insert into the log");
+			  	} else {
+			  		console.log("WRITE SUCCESSFUL: LOG");
+			  	}
+			});
+		  	query.on('end', function() { 
+			  client.end();
+			});
 		});
-	  	query.on('end', function() { 
-		  client.end();
-		});
-	});
+	}
+
 }
 
 function mainFunction(){
-	console.log("################# IN SIDE MAIN");
+
 	if( ! grid ){
 		throw Error("Failed to load grid from database :'(");
 		writeGridToFile();
