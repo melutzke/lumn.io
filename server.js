@@ -114,12 +114,14 @@ function mainFunction(){
 		});
 
 		socket.on('colorChange', function (data) {
-			if(data 
+			if(	   data 
 				&& data.color 
 				&& data.x < size 
 				&& data.x >= 0 
 				&& data.y >= 0 
-				&& data.y < size){
+				&& data.y < size
+				&& data.x % 1 == 0
+				&& data.y % 1 == 0){
 
 				var change = grid[data.x][data.y] != data.color;
 
