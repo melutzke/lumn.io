@@ -5,6 +5,8 @@ var app = {};
 	app.ctx = 			app.canvas.getContext('2d');
 	app.mouseX = 		0;
 	app.mouseY = 		0;
+	app.mouseXPrev = 	0;
+	app.mouseYPrev = 	0;
 	app.grid = 			null;
 	app.size = 			200;
 	app.squareSize = 	app.canvas.width / app.size;
@@ -91,11 +93,59 @@ function render(){
 	app.scaleFlag = false;
 }
 
-app.$canvas.bind("mousemove", function(event){
-    var rect = app.canvas.getBoundingClientRect();
-    app.mouseX = event.clientX - rect.left;
-    app.mouseY = event.clientY - rect.top;
-});
+function interpMark(){
+ 	var x0 = app.mouseX;
+ 	var x1 = app.mouseXPrev;
+ 	var y0 = app.mouseY;
+ 	var y1 = app.mouseYPrev;
+ 	var tmp;
+
+ 	var steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
+ 	if(steep){
+ 		tmp = x0; x0 = y0; y0 = tmp; // swap x0, y0
+ 		tmp = x1; x1 = y1; y1 = tmp; // swap x1, y1
+ 	}
+ 	if( x0 > x1 ){
+ 		tmp = x0; x0 = x1; x1 = tmp; // swap x0, x1
+ 		tmp = y0; y0 = y1; y1 = tmp; // swap y0, y1
+ 	}
+ 	var deltaX = x1 - x0;
+ 	var deltaY = Math.abs(y1 - y0);
+ 	var error = Math.floor(deltaX / 2);
+ 	var yStep;
+ 	var y = y0;
+ 	if( y0 < y1 ){
+ 		yStep = 1;
+ 	} else {
+ 		yStep = -1;
+ 	}
+ 	for(var x = x0; x <= x1; x++){
+ 		if( steep ){
+ 			drawPixel(y,x)
+ 		} else {
+ 			drawPixel(x,y)
+ 		}
+ 		error = error - deltaY;
+ 		if(error < 0){
+ 			y = y + yStep;
+ 			error = error + deltaX;
+ 		}
+ 	}
+}
+
+function drawPixel(x, y){
+	if(x >= 0 && x < app.size && y >= 0 && y < app.size){
+		app.grid[x][y].changed = true;
+		app.grid[x][y].color = app.color;
+
+		socket.emit('colorChange', {
+			x: x, 
+			y: y, 
+			color: app.color, 
+			changed: true
+		});
+	}
+}
 
 app.$canvas.bind("wheel mousewheel", function(e) {
 	app.scaleFlag = true;
@@ -106,8 +156,22 @@ app.$canvas.bind("wheel mousewheel", function(e) {
     scale(delta, app);
 });
 
+// app.$canvas.bind("mousemove", function(event){
+//     var rect = app.canvas.getBoundingClientRect();
+//     var mouse = getMouse(app.canvas, event, true);
+//     app.mouseXPrev = app.mouseX;
+//     app.mouseYPrev = app.mouseY;
+//     app.mouseX = mouse.x;
+//     app.mouseY = mouse.y;
+// });
 
 app.$canvas.bind('mousedown', function(event){
+
+	var mouse = getMouse(app.canvas, event, true);
+	app.mouseXPrev = 	mouse.x;
+	app.mouseX = 		mouse.x;
+	app.mouseYPrev =  	mouse.y;
+	app.mouseY = 		mouse.y;
 
 	app.color = $('input:checked').parent('.colorWrapper').children('.color').spectrum('get').toHexString();
 
@@ -115,17 +179,12 @@ app.$canvas.bind('mousedown', function(event){
 
 		var mouse = getMouse(app.canvas, event, true);
 
-		if(mouse.x >= 0 && mouse.x < app.size && mouse.y >= 0 && mouse.y < app.size){
-			app.grid[mouse.x][mouse.y].changed = true;
-			app.grid[mouse.x][mouse.y].color = app.color;
+		app.mouseXPrev = app.mouseX;
+		app.mouseYPrev = app.mouseY;
+		app.mouseX = mouse.x;
+		app.mouseY = mouse.y;
 
-			socket.emit('colorChange', {
-				x: mouse.x, 
-				y: mouse.y, 
-				color: app.color, 
-				changed: true
-			});
-		}
+		interpMark();
 
 	});
 
